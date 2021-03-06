@@ -3,6 +3,7 @@ import time
 import numpy as np
 import picamera
 import picamera.array
+import cv2
 
 class _Car:
 	"""Provide an easy to use class to encapsualte
@@ -137,11 +138,15 @@ class _Car:
 		 
 		 this code from
 		 https://picamera.readthedocs.io/en/release-1.10/quickstart.html
+		 https://stackoverflow.com/questions/50630045/how-to-turn-numpy-array-image-to-bytes
 		"""
 		with picamera.PiCamera() as camera:
 			with picamera.array.PiRGBArray(camera) as stream:
 				camera.resolution = (width, height)
 				camera.capture(stream, 'rgb')
-				return stream.array
+				tmp = cv2.cvtColor(stream.array, cv2.COLOR_RGB2BGR)
+				success, encoded_image = cv2.imencode('.png', tmp)
+				print("*** image success {0}".format(success))
+				return encoded_image
 
 Car = _Car()
