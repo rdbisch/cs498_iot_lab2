@@ -1,6 +1,7 @@
 import picar_4wd as fc
 import time
 import numpy as np
+import picamera
 
 class _Car:
 	"""Provide an easy to use class to encapsualte
@@ -128,5 +129,18 @@ class _Car:
 		cm = (343.0/2.0) * (100.0) * delta  # m/s * (cm/m) * time = cm
 		self.last_reading = cm
 		return cm
+
+	def take_picture(self, width = 1024, height = 768):
+		"""Take a picture with the raspberry pi camera
+		 and return
+		 
+		 this code from
+		 https://picamera.readthedocs.io/en/release-1.10/quickstart.html
+		"""
+		with picamera.PiCamera() as camera:
+			with picamera.array.PiRGBArray(camera) as stream:
+				camera.resolution = (width, height)
+				camera.capture(stream, 'rgb')
+				return stream.array
 
 Car = _Car()
