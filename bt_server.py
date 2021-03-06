@@ -45,13 +45,13 @@ while 1:
 			func, arg = commands[command]
 			if arg in argparse: 
 				parsed_arg = argparse[arg](args[1])
-				client.send("Received command {0} with arg {1}".format(func, parsed_arg))
+				print("<< Received command {0} with arg {1}".format(command, parsed_arg))
 				result = func(parsed_arg)
-				client.send(result)
+				client.send(X(result))
 			elif arg == None:
-				client.send("Received comamnd {0}".format(func))
+				print("<< Received comamnd {0}".format(command))
 				result = func()
-				client.send(result)
+				client.send(X(result))
 			else:
 				raise "Invalid argument {0} for function {1}".format(arg, func)
 

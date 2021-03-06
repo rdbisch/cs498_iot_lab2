@@ -2,6 +2,7 @@ import picar_4wd as fc
 import time
 import numpy as np
 import picamera
+import picamera.array
 
 class _Car:
 	"""Provide an easy to use class to encapsualte
