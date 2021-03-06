@@ -14,15 +14,19 @@ OK = "000111001101111 binary solo" # The humans are dead
 def X(s):
 	return str(s).encode('utf-8')
 
+# The keyword is the command.  The tuple is as follows:
+#  [0] - Function call
+#  [1] - How to parse the argument, if any
+#  [2] - True if output needs to be encoded
 commands = {
-	"set_angle": (Car.set_angle, 'f'),
-	"read_angle": (Car.read_angle, None),
-	"set_heading": (Car.set_heading, 'f'),
-	"read_heading": (Car.read_velocity, None),
-	"drive_forwards": (Car.drive_forwards, None),
-	"drive_backwards": (Car.drive_backwards, None),
-	"ping": (Car.ping, None),
-	"take_picture": (Car.take_picture, None)		
+	"set_angle": (Car.set_angle, 'f', True),
+	"read_angle": (Car.read_angle, None), True,
+	"set_heading": (Car.set_heading, 'f', True),
+	"read_heading": (Car.read_velocity, None, True),
+	"drive_forwards": (Car.drive_forwards, None, True),
+	"drive_backwards": (Car.drive_backwards, None, True), 
+	"ping": (Car.ping, None, True),
+	"take_picture": (Car.take_picture, None, False)
 }
 
 argparse = {
@@ -42,18 +46,20 @@ while 1:
 		command = args[0]
 
 		if command in commands:
-			func, arg = commands[command]
+			func, arg, encode = commands[command]
+			result = None
 			if arg in argparse: 
 				parsed_arg = argparse[arg](args[1])
 				print("<< Received command {0} with arg {1}".format(command, parsed_arg))
 				result = func(parsed_arg)
-				client.send(X(result))
 			elif arg == None:
 				print("<< Received comamnd {0}".format(command))
 				result = func()
-				client.send(X(result))
 			else:
 				raise "Invalid argument {0} for function {1}".format(arg, func)
+
+			if encode: client.send(X(result))
+			else: client.send(result)
 
 		else:
 			client.send("unknown command.")
