@@ -20,7 +20,7 @@ def X(s):
 #  [2] - True if output needs to be encoded
 commands = {
 	"set_angle": (Car.set_angle, 'f', True),
-	"read_angle": (Car.read_angle, None), True,
+	"read_angle": (Car.read_angle, None, True),
 	"set_heading": (Car.set_heading, 'f', True),
 	"read_heading": (Car.read_velocity, None, True),
 	"drive_forwards": (Car.drive_forwards, None, True),
