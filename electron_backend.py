@@ -1,13 +1,12 @@
 import bluetooth
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 host = "DC:A6:32:9C:02:43" # The address of Raspberry PI Bluetooth adapter on the server.
 
-if None:
-    port = 1
-    sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-    sock.connect((host, port))
+port = 1
+sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+sock.connect((host, port))
 #while 1:
 #    text = input("Enter your message: ") # Note change to the old (Python 2) raw_input
 #    if text == "quit":
@@ -24,7 +23,7 @@ def car_send(msg):
     sock.send(msg)
     data = sock.recv(1024)
     print("<< {0}".format(data))
-    return data
+    return { "response": data }
 
 @app.route('/forward', methods=['POST'])
 def forward():
@@ -38,15 +37,16 @@ def stopcar():
 def reverse():
     return car_send("drive_backwards")
 
-@app.route('/angle', methods=['GET', 'POST'])
+@app.route('/angle', methods=['GET'])
 def angle():
-    error = None
-    if request.method == 'POST':
-        a = float(request.form['angle'])
-        car_send("set_angle {0}".format(a))
-    elif request.method == 'GET':
-        result = car_send("read_angle")
-        return float(result)
+    result = car_send("read_angle")
+    return result
+
+@app.route('/set_angle', methods=['POST'])
+def set_angle():
+    print("in set_angle... request.json is {0}".format(request.get_json()))
+    a = float(request.form['angle'])
+    return car_send("set_angle {0}".format(a))
 
 @app.route('/heading', methods=['GET', 'POST'])
 def heading():

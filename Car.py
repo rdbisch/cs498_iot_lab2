@@ -42,7 +42,8 @@ class _Car:
 		vx = np.cos(self.velocity[0]) * self.velocity[1]
 		vy = np.sin(self.velocity[0]) * self.velocity[1]
 		t = time.time()
-		td = t - self.motionStarted
+		if self.motionStarted == None: td = 0
+		else: td = t - self.motionStarted
 		# we were at worldpos at time=motionStarted
 		# uppdate so that we're now at worldpos + t*v
 		# where t = time() - motionStarted and v is our velocity.

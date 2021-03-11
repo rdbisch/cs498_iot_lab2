@@ -45,6 +45,13 @@ function forward() {
     //}));
 }
 
+function backward() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://127.0.0.1:5000/reverse", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send();
+}
+
 function all_stop() {
     /* https://stackoverflow.com/questions/6396101/pure-javascript-send-post-data-without-a-form */
     var xhr = new XMLHttpRequest();
@@ -57,15 +64,26 @@ function all_stop() {
 }
 
 function left() {
+
+    fetch("http://127.0.0.1/5000/set_angle", {
+        credentials: 'same-origin',
+        method: "POST",
+        body: JSON.stringify({ angle: 90 }),
+        headers: new Headers({ 'Content-Type': 'application/json'})
+    }).then(res => {
+        console.log("Request complete! response:", res);
+    });
+/*
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "http://127.0.0.1:5000/angle", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({ angle: 90 }));
+*/
 }
 
 function right() {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://127.0.0.1:5000/angle", true);
+    xhr.open("POST", "http://127.0.0.1:5000/set_angle", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({ angle: -90 }));
 }
