@@ -65,14 +65,10 @@ function all_stop() {
 
 function left() {
 
-    fetch("http://127.0.0.1/5000/set_angle", {
-        credentials: 'same-origin',
-        method: "POST",
-        body: JSON.stringify({ angle: 90 }),
-        headers: new Headers({ 'Content-Type': 'application/json'})
-    }).then(res => {
-        console.log("Request complete! response:", res);
-    });
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://127.0.0.1:5000/heading", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({ angle: 90 }));
 /*
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "http://127.0.0.1:5000/angle", true);
@@ -83,7 +79,7 @@ function left() {
 
 function right() {
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://127.0.0.1:5000/set_angle", true);
+    xhr.open("POST", "http://127.0.0.1:5000/heading", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.send(JSON.stringify({ angle: -90 }));
 }
