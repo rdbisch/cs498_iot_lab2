@@ -44,16 +44,19 @@ def angle():
 
 @app.route('/set_angle', methods=['POST'])
 def set_angle():
-    print("in set_angle... request.json is {0}".format(request.get_json()))
-    a = float(request.form['angle'])
+    res = request.get_json()
+    print("in set_angle... request.json is {0}".format(res))
+    a = res["angle"]
     return car_send("set_angle {0}".format(a))
 
 @app.route('/heading', methods=['GET', 'POST'])
 def heading():
     error = None
     if request.method == 'POST':
-        a = float(request.form['heading'])
-        car_send("set_heading {0}".format(a))
+        res = request.get_json()
+        print("/heading POST res={0}".format(res))
+        a = float(res["angle"])
+        return car_send("set_heading {0}".format(a))
     elif request.method == 'GET':
         result = car_send("read_heading")
         return float(result)

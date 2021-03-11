@@ -18,6 +18,7 @@ class _Car:
 		self.map = None
 		self.set_angle(0)
 		self.inMotion = False
+		self.motionStarted = None
 
 	def set_angle(self, angle):
 		"""Set the servo angle to angle, controlling
