@@ -3,9 +3,11 @@ from flask import Flask
 
 app = Flask(__name__)
 host = "DC:A6:32:9C:02:43" # The address of Raspberry PI Bluetooth adapter on the server.
-port = 1
-sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-sock.connect((host, port))
+
+if None:
+    port = 1
+    sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    sock.connect((host, port))
 #while 1:
 #    text = input("Enter your message: ") # Note change to the old (Python 2) raw_input
 #    if text == "quit":
@@ -22,6 +24,7 @@ def car_send(msg):
     sock.send(msg)
     data = sock.recv(1024)
     print("<< {0}".format(data))
+    return data
 
 @app.route('/forward', methods=['POST'])
 def forward():
@@ -63,6 +66,16 @@ def ping():
 @app.route('/picture', methods=['POST'])
 def picture():
     result = car_send("take_picture")
+    return result
+
+@app.route('/temp', methods=['GET'])
+def temp():
+    result = car_send("read_temp")
+    return result
+
+@app.route('/power', methods=['GET'])
+def power():
+    result = car_send("read_power")
     return result
 
 @app.route('/')

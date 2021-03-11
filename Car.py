@@ -4,6 +4,7 @@ import numpy as np
 import picamera
 import picamera.array
 import cv2
+import subprocess
 
 class _Car:
 	"""Provide an easy to use class to encapsualte
@@ -88,6 +89,24 @@ class _Car:
 		self.all_stop()
 		turn = angle - self.velocity[0]
 		return self._turnAngle(turn)
+
+	def read_power(self):
+		# From picar_4wd/utils.py
+		from picar_4wd.adc import ADC
+		power_read_pin = ADC('A4')
+		power_val = power_read_pin.read()
+		power_val = power_val / 4095.0 * 3.3
+		# print(power_val)
+		power_val = power_val * 3
+		power_val = round(power_val, 2)
+		return power_val
+
+	def read_temp(self):
+		# From picar_4wd/utils.py
+		raw_cpu_temperature = subprocess.getoutput("cat /sys/class/thermal/thermal_zone0/temp")
+		cpu_temperature = round(float(raw_cpu_temperature)/1000,2)               # convert unit
+		#cpu_temperature = 'Cpu temperature : ' + str(cpu_temperature)
+		return cpu_temperature
 
 	def _turnAngle(self, angle):
 		"""Turn the car by a relative amount.  A positive angle is left"""

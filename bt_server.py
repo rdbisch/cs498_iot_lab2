@@ -27,7 +27,9 @@ commands = {
 	"drive_backwards": (Car.drive_backwards, None, True), 
 	"ping": (Car.ping, None, True),
 	"take_picture": (Car.take_picture, None, False),
-	"all_stop": (Car.all_stop, None, True)
+	"all_stop": (Car.all_stop, None, True),
+	"read_power": (Car.read_power, None, True),
+	"read_temp": (Car.read_temp, None, True)
 }
 
 argparse = {

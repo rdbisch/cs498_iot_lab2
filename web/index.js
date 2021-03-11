@@ -55,3 +55,47 @@ function all_stop() {
     //    value: value
     //}));
 }
+
+function left() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://127.0.0.1:5000/angle", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({ angle: 90 }));
+}
+
+function right() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://127.0.0.1:5000/angle", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify({ angle: -90 }));
+}
+
+function worldpos() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://127.0.0.1:5000/angle", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            document.getElementById("worldheading").innerHTML = data;
+        }
+    }
+    xhr.send();
+}
+
+function readtemp() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "http://127.0.0.1:5000/temp", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            document.getElementById("temp").innerHTML = data;
+        }
+    }
+    xhr.send();
+}

@@ -6,15 +6,32 @@
     <body>
         <h1>CS498 IoT - Lab 2</h1>
         <h2>rdb4@illinois.edu</h2>
-        <p>Car stuff here.</p>
-        <p>
-        My name is: <input id="myName" type="text" placeholder="name"/>
+
+        <p>Controls
         <button class="btn btn-success" onclick="forward()">Forwards</button>
         <button class="btn btn-success" onclick="backward()">Backward</button>
         <button class="btn btn-success" onclick="all_stop()">Stop!!</button>
-        <br>
-        <span id="greet"></span>
-        <br>
-        <span id="greet_from_server"></span>
+        </p><p>
+            <button class="btn btn-success" onclick="left()">Left</button>
+            <button class="btn btn-success" onclick="right()">Right</button>
+        </p>
+        <p>           
+                <button class="btn btn-success" onclick="readworldpos()">Read (inferred) World Position and Heading.</button>
+                <input id="worldheading" value="">
+                <input id="worldpos" value="">
+        </p>
+        <p>
+            
+                <button class="btn btn-success" onclick="readtemp()">Read Raspberry Pi Temp and Power Situation.</button>
+                <input id="temp" value="">
+        </p>
+        <p>
+            <button class="btn btn-success" onclick="takepicture()">Take Picture!</button>
+            <img id="camera">
+        </p>
+        <p>
+            <button class="btn btn-success" onclick="scanworld()">Scan World</button>
+            <img id="ultrasonic">
+        </p>
     </body>
 </html>
