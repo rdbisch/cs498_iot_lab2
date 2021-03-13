@@ -108,7 +108,7 @@ function readtemp() {
         if (this.readyState != 4) return;
         if (this.status == 200) {
             var data = JSON.parse(this.responseText);
-            document.getElementById("temp").innerHTML = data;
+            document.getElementById("temp").innerHTML = data["temperature"];
         }
     }
     xhr.send();

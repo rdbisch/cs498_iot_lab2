@@ -25,6 +25,26 @@ def car_send(msg):
     print("<< {0}".format(data))
     return { "response": data }
 
+# Wrapper to receive file
+def recv_file(msg):
+    data = sock.recv(1024)
+    print("<< {0}".format(data))
+    data_s = data.split(" ")
+    if (data_s[0] != "sendfile"): 
+        print("Expecting 'sendfile', but received {0}".format(data_s[0]))
+
+    picdata_s = int(data_s[1])
+    print("Expecting {0} bytes".format(picdata_s))
+
+    picdata = ""
+    idx = 0
+    while (idx < picdata_s):
+        data = sock.recv(1024)
+        print("Received block idx {0} size {1}".format(idx, len(data)))
+        picdata = picdata + data
+        idx = idx + 1024
+    return picdata.decode('utf-8')
+
 @app.route('/forward', methods=['POST'])
 def forward():
     return car_send("drive_forwards")
@@ -74,7 +94,7 @@ def picture():
 @app.route('/temp', methods=['GET'])
 def temp():
     result = car_send("read_temp")
-    return result
+    return { "temperature": float(result["response"].decode('utf-8')) }
 
 @app.route('/power', methods=['GET'])
 def power():
