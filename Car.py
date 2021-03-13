@@ -43,6 +43,9 @@ class _Car:
 		"""If the car has any kind of velocity,
 		this function will update our guess at our world
 		position."""
+
+		print("In update world, before updates pos {0}".format(self.worldpos))
+
 		vx = np.cos(self.velocity[0]) * self.velocity[1]
 		vy = np.sin(self.velocity[0]) * self.velocity[1]
 		t = time.time()
@@ -53,10 +56,11 @@ class _Car:
 		# we were at worldpos at time=motionStarted
 		# uppdate so that we're now at worldpos + t*v
 		# where t = time() - motionStarted and v is our velocity.
-		x = self.worldpos[1] + (t - td)*vx
-		y = self.worldpos[0] + (t - td)*vy 
+		x = self.worldpos[1] + td*vx
+		y = self.worldpos[0] + td*vy 
 		self.worldpos = (y, x)
 		self.motionStarted = t
+		print("In update world, after updates pos {0}".format(self.worldpos))
 
 	def all_stop(self):
 		"""Stop all motors and update internal state
