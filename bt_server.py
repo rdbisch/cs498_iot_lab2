@@ -22,6 +22,12 @@ def picWrapper():
 	client.send("sendfile {0}".format(size))
 	print("Sending data...")
 	client.send(data_s)
+
+	xtra_bytes_n = 1024 - (size % 1024)
+	if xtra_bytes_n > 0:
+		zero_s = np.zeros(xtra_bytes_n, 'uint8').tostring()
+		client.send(zero_s)
+
 	print("Done sending...")
 	return "endfile"
 

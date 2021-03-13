@@ -36,8 +36,9 @@ def recv_file(msg):
         print("Expecting 'sendfile', but received {0}".format(msg_s[0]))
 
     picdata_s = int(msg_s[1])
-    print("Expecting {0} bytes".format(picdata_s))
-    data = sock.recv(picdata_s)
+	xtra_bytes_n = 1024 - (picdata_s % 1024)
+    print("Expecting {0} bytes of file and {1} of zeros".format(picdata_s, xtra_bytes_n))
+    data = sock.recv(picdata_s + xtra_bytes_n)
     print("Received {0} bytes".format(len(data)))
     print("Waiting endfile")
     end = sock.recv(1024)
@@ -111,3 +112,8 @@ def power():
 @app.route('/')
 def hello_world():
     return 'Hello, World!'
+
+if __name__ == '__main__':
+    #Disable multithreaded so we only maintain
+    # one bluetooth connection
+    app.run(threaded=False)
