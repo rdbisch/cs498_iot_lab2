@@ -86,14 +86,14 @@ function right() {
 
 function worldpos() {
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://127.0.0.1:5000/angle", true);
+    xhr.open("GET", "http://127.0.0.1:5000/worldpos", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
 
     xhr.onreadystatechange = function() {
         if (this.readyState != 4) return;
         if (this.status == 200) {
             var data = JSON.parse(this.responseText);
-            document.getElementById("worldheading").innerHTML = data;
+            document.getElementById("worldheading").innerHTML = "x-pos: " + data.x + " y-pos: " + data.y;
         }
     }
     xhr.send();

@@ -48,6 +48,8 @@ class _Car:
 		t = time.time()
 		if self.motionStarted == None: td = 0
 		else: td = t - self.motionStarted
+
+		print("In update world, td = {0} (t = {1} and start = {2}). vx,vy={3}".format(td, t, self.motionStarted, (vx,vy)))
 		# we were at worldpos at time=motionStarted
 		# uppdate so that we're now at worldpos + t*v
 		# where t = time() - motionStarted and v is our velocity.
@@ -83,7 +85,7 @@ class _Car:
 		location information first, then start again."""
 		if self.inMotion: self.all_stop()
 
-		fc.backwards(10)
+		fc.backward(10)
 		self.inMotion = True
 		self.motionStarted = time.time()
 		self.velocity = (self.velocity[0], -10)
@@ -137,7 +139,7 @@ class _Car:
 		fc.turn_right(10)
 		time.sleep(duration)
 		fc.turn_right(0)
-		self.velocity = (self.velocity[0] - angle, self.velocity)
+		self.velocity = (self.velocity[0] - angle, self.velocity[1])
 		return
 
 	def ping(self):

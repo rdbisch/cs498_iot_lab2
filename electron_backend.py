@@ -90,7 +90,12 @@ def set_angle():
 
 @app.route('/worldpos', methods=['GET'])
 def worldpos():
-    return car_send("worldpos")
+    r = car_send("read_worldpos")
+    r = r["response"].decode('utf-8')
+    s = r.split(",")
+    x = s[0][1:]
+    y = s[1][:-1]
+    return { "x": x, "y": y }
 
 @app.route('/heading', methods=['GET', 'POST'])
 def heading():
@@ -122,7 +127,7 @@ def temp():
 @app.route('/power', methods=['GET'])
 def power():
     result = car_send("read_power")
-    return result
+    return { "power": float(result["response"].decode('utf-8')) }
 
 @app.route('/')
 def hello_world():
