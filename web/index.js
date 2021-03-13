@@ -118,5 +118,12 @@ function takePicture() {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", "http://127.0.0.1:5000/picture", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function() {
+        if (this.readyState != 4) return;
+        if (this.status == 200) {
+            var data = JSON.parse(this.responseText);
+            document.getElementById("camera").src = "../static/picamera.jpg?" + new Date().getTime();
+        }
+    }
     xhr.send();    
 }

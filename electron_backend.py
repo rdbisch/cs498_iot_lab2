@@ -62,7 +62,7 @@ def recv_file(msg):
     img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     print("Decode image? {0}".format(img_decode.shape))
     cv2.imwrite('static/picamera.jpg', img_decode)
-    return
+    return { "success": True }
 
 @app.route('/forward', methods=['POST'])
 def forward():
