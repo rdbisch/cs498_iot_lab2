@@ -1,5 +1,6 @@
 import bluetooth
 import numpy as np
+import base64
 import cv2
 from flask import Flask, request
 
@@ -36,14 +37,24 @@ def recv_file(msg):
         print("Expecting 'sendfile', but received {0}".format(msg_s[0]))
 
     picdata_s = int(msg_s[1])
-	xtra_bytes_n = 1024 - (picdata_s % 1024)
-    print("Expecting {0} bytes of file and {1} of zeros".format(picdata_s, xtra_bytes_n))
-    data = sock.recv(picdata_s + xtra_bytes_n)
-    print("Received {0} bytes".format(len(data)))
+    print("Expecting {0} bytes of file".format(picdata_s))
+
+    block_size = 512
+    data_b64 = bytearray()
+    idx = 0
+    while (idx*block_size < picdata_s):
+        block = sock.recv(1024)
+        print ("received block {0} size {1}".format(idx, len(block)))
+        data_b64 = data_b64 + block
+        idx = idx + 1
+
     print("Waiting endfile")
     end = sock.recv(1024)
     assert(end == b'endfile')
     print("Received endfile")
+
+    data = base64.b64decode(data_b64)
+
     nparr = np.fromstring(data, np.uint8)
     print(nparr)
     print(nparr.shape)

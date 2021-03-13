@@ -1,5 +1,6 @@
 import bluetooth
 import numpy as np
+import base64
 from Car import Car
 
 hostMACAddress = "DC:A6:32:9C:02:43" # The address of Raspberry PI Bluetooth adapter on the server. The server might have multiple Bluetooth adapters.
@@ -17,7 +18,7 @@ def X(s):
 
 def picWrapper():
 	data = Car.take_picture()
-	data_s = np.array(data).tostring()
+	data_s = base64.b64encode(np.array(data).tostring())
 	size = len(data)
 	client.send("sendfile {0}".format(size))
 	print("Sending data...")
