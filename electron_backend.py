@@ -88,6 +88,10 @@ def set_angle():
     a = res["angle"]
     return car_send("set_angle {0}".format(a))
 
+@app.route('/worldpos', methods=['GET'])
+def worldpos():
+    return car_send("worldpos")
+
 @app.route('/heading', methods=['GET', 'POST'])
 def heading():
     error = None

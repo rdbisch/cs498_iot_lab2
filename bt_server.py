@@ -58,7 +58,8 @@ commands = {
 	"take_picture": (picWrapper, None, False),
 	"all_stop": (Car.all_stop, None, True),
 	"read_power": (Car.read_power, None, True),
-	"read_temp": (Car.read_temp, None, True)
+	"read_temp": (Car.read_temp, None, True),
+	"worldpos": (Car.read_worldpos, None, True)
 }
 
 argparse = {

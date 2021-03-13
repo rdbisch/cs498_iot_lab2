@@ -32,6 +32,9 @@ class _Car:
 		is set at."""
 		return self.servo_angle
 
+	def read_worldpos(self):
+		return self.worldpos
+
 	def read_velocity(self):
 		"""Returns the current internal state of our velocity."""
 		return self.velocity
