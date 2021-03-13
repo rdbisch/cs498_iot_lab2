@@ -113,3 +113,10 @@ function readtemp() {
     }
     xhr.send();
 }
+
+function takePicture() {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://127.0.0.1:5000/picture", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send();    
+}
