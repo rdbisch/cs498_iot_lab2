@@ -41,10 +41,10 @@ def recv_file(msg):
     picdata = bytearray()
     data = sock.recv(picdata_s)
     print("Received {0} bytes".format(picdata_s))
-
+    print("Waiting endfile")
     end = sock.recv(1024)
     assert(end == b'endfile')
-    print(data)
+    print("Received endfile")
     nparr = np.fromstring(data, np.uint8)
     print(nparr)
     print(nparr.shape)
@@ -52,16 +52,7 @@ def recv_file(msg):
     img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     print("Decode image? {0}".format(img_decode.shape))
     cv2.imwrite('static/picamera.png', img_decode)
-
-    #idx = 0
-    #while (idx < picdata_s):
-    #    data = sock.recv(1024)
-    #    print("Received block idx {0} size {1}".format(idx, len(data)))
-    #    picdata += data
-    #
-    # 
-    #     idx = idx + len(data)
-    return picdata.decode('utf-8')
+    return
 
 @app.route('/forward', methods=['POST'])
 def forward():
