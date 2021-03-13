@@ -1,5 +1,6 @@
 import bluetooth
 import numpy as np
+import cv2
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -39,9 +40,18 @@ def recv_file(msg):
 
     picdata = bytearray()
     data = sock.recv(picdata_s)
+    print("Received {0} bytes".format(picdata_s))
 
     end = sock.recv(1024)
     assert(end == b'endfile')
+    print(data)
+    nparr = np.fromstring(data, np.uint8)
+    print(nparr)
+    print(nparr.shape)
+
+    img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    print("Decode image? {0}".format(img_decode.shape))
+    cv2.imwrite('static/picamera.png', img_decode)
 
     #idx = 0
     #while (idx < picdata_s):

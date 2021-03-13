@@ -18,7 +18,7 @@ def picWrapper():
 	data = Car.take_picture()
 	print("Received from car camera {0}".format(data))
 	print("data shape is {0}".format(data.shape))
-	data_s = str(data).encode('utf-8')
+	data_s = np.array(data).tostring()
 	size = len(data)
 	client.send("sendfile {0}".format(size))
 	client.send(data_s)

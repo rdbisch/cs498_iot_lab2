@@ -168,6 +168,8 @@ class _Car:
 				tmp = cv2.cvtColor(stream.array, cv2.COLOR_RGB2BGR)
 				success, encoded_image = cv2.imencode('.png', tmp)
 				print("*** image success {0}".format(success))
-				return encoded_image
+				data_encode = np.array(encoded_image)
+				str_encode = data_encode.tostring()
+				return str_encode
 
 Car = _Car()
