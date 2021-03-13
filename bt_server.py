@@ -19,17 +19,28 @@ def X(s):
 def picWrapper():
 	data = Car.take_picture()
 	data_s = base64.b64encode(np.array(data).tostring())
-	size = len(data)
+	size = len(data_s)
 	client.send("sendfile {0}".format(size))
-	print("Sending data...")
-	client.send(data_s)
+	print("Sending data...{0} bytes total".format(size))
 
-	xtra_bytes_n = 1024 - (size % 1024)
-	if xtra_bytes_n > 0:
-		zero_s = np.zeros(xtra_bytes_n, 'uint8').tostring()
-		client.send(zero_s)
+	idx = 0
+	block_size = 512
+	while (block_size*idx) < size:
+		idx_start = block_size*idx
+		idx_stop  = min(block_size*(idx + 1), size)
+		buf = data_s[idx_start:idx_stop]
 
-	print("Done sending...")
+		print("Sending block {0} bufsize {1}".format(idx, len(buf)))
+		client.send(buf)
+		idx = idx + 1
+
+	#client.send(data_s)
+	#if xtra_bytes_n > 0:
+	#	zero_s = np.zeros(xtra_bytes_n, 'uint8').tostring()
+	#	client.send(zero_s)
+
+	#client.send("endfile\nendfile\nendfile\nendfile")
+	#print("Done sending...")
 	return "endfile"
 
 # The keyword is the command.  The tuple is as follows:
