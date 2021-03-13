@@ -37,10 +37,8 @@ def recv_file(msg):
 
     picdata_s = int(msg_s[1])
     print("Expecting {0} bytes".format(picdata_s))
-
-    picdata = bytearray()
     data = sock.recv(picdata_s)
-    print("Received {0} bytes".format(picdata_s))
+    print("Received {0} bytes".format(len(data)))
     print("Waiting endfile")
     end = sock.recv(1024)
     assert(end == b'endfile')
@@ -51,7 +49,7 @@ def recv_file(msg):
 
     img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     print("Decode image? {0}".format(img_decode.shape))
-    cv2.imwrite('static/picamera.png', img_decode)
+    cv2.imwrite('static/picamera.jpg', img_decode)
     return
 
 @app.route('/forward', methods=['POST'])

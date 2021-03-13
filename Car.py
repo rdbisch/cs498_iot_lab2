@@ -153,7 +153,7 @@ class _Car:
 		self.last_reading = cm
 		return cm
 
-	def take_picture(self, width = 1024, height = 768):
+	def take_picture(self, width = 640, height = 480):
 		"""Take a picture with the raspberry pi camera
 		 and return
 		 
@@ -166,7 +166,7 @@ class _Car:
 				camera.resolution = (width, height)
 				camera.capture(stream, 'rgb')
 				tmp = cv2.cvtColor(stream.array, cv2.COLOR_RGB2BGR)
-				success, encoded_image = cv2.imencode('.png', tmp)
+				success, encoded_image = cv2.imencode('.jpg', tmp)
 				print("*** image success {0}".format(success))
 				data_encode = np.array(encoded_image)
 				str_encode = data_encode.tostring()
