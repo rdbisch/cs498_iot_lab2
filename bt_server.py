@@ -14,6 +14,24 @@ OK = "000111001101111 binary solo" # The humans are dead
 def X(s):
 	return str(s).encode('utf-8')
 
+def picWrapper():
+	data = Car.take_picture()
+	print("Received from car camera {0}".format(data))
+	print("data shape is {0}".format(data.shape))
+	data_s = str(data).encode('utf-8')
+	size = len(data)
+	client.send("sendfile {0}".format(size))
+	client.send(data_s)
+#	i = 0
+#	while 1024*i < size:
+#		start = 1024*i
+#		stop = 1024*(i+1)
+#		stop = min(size, stop)
+#		print("i {0} start {1} stop {2}".format(i, start, stop))
+#		client.send(data_s[start:stop])
+#		i = i + 1
+	return "endfile"
+
 # The keyword is the command.  The tuple is as follows:
 #  [0] - Function call
 #  [1] - How to parse the argument, if any
@@ -26,7 +44,7 @@ commands = {
 	"drive_forwards": (Car.drive_forwards, None, True),
 	"drive_backwards": (Car.drive_backwards, None, True), 
 	"ping": (Car.ping, None, True),
-	"take_picture": (picWrapper None, False),
+	"take_picture": (picWrapper, None, False),
 	"all_stop": (Car.all_stop, None, True),
 	"read_power": (Car.read_power, None, True),
 	"read_temp": (Car.read_temp, None, True)
@@ -36,17 +54,6 @@ argparse = {
 	'f': lambda x: float(x)
 }
 
-def picWrapper():
-	data = Car.take_picture()
-	data_s = data.encode('utf-8')
-	size = len(data) // 1024
-	client.send("sendfile {0}".format(size))
-	for i in range(size):
-		start = 1024*i
-		stop = 1024*(i+1)
-		stop = min(len(data), stop)
-		client.send(data_s[start:stop])
-	return "endfile"
 
 print("listening on port ", port)
 client, clientInfo = s.accept()
