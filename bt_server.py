@@ -11,11 +11,16 @@ s = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 s.bind((hostMACAddress, port))
 s.listen(backlog)
 
-OK = "000111001101111 binary solo" # The humans are dead
-
+# Wrapper to encode. In the event
+# I need to change it, this allows me to 
+# change it only once.
 def X(s):
 	return str(s).encode('utf-8')
 
+# This is a speical routine 
+#  to facilitate transferring files over BlueTooth
+# The basic idea is to send ahead of time the number of bytes
+#  to expect, and then send them over in small chunks.
 def picWrapper():
 	data = Car.take_picture()
 	data_s = base64.b64encode(np.array(data).tostring())
@@ -23,6 +28,7 @@ def picWrapper():
 	client.send("sendfile {0}".format(size))
 	print("Sending data...{0} bytes total".format(size))
 
+	# idx will keep track of which block we're on.
 	idx = 0
 	block_size = 512
 	while (block_size*idx) < size:
@@ -34,16 +40,13 @@ def picWrapper():
 		client.send(buf)
 		idx = idx + 1
 
-	#client.send(data_s)
-	#if xtra_bytes_n > 0:
-	#	zero_s = np.zeros(xtra_bytes_n, 'uint8').tostring()
-	#	client.send(zero_s)
-
-	#client.send("endfile\nendfile\nendfile\nendfile")
-	#print("Done sending...")
 	return "endfile"
 
-# The keyword is the command.  The tuple is as follows:
+# This command dictionary contains the "protocol" for how
+#  we communicate back and forth to the other server.  
+# Given that the dictionary is a set of Key->value pairs.  
+#  In this case, the Key is the "string" command that will be
+#  sent to us via bluetooh.  The Value is a 3-tuple with elements:
 #  [0] - Function call
 #  [1] - How to parse the argument, if any
 #  [2] - True if output needs to be encoded
@@ -62,11 +65,17 @@ commands = {
 	"read_worldpos": (Car.read_worldpos, None, True)
 }
 
+# This is a dictionary of functions to call for different 
+#  argument parsing options.  We only have 'f' now but who 
+#  knows what we'll need later.
 argparse = {
 	'f': lambda x: float(x)
 }
 
-
+# This is the main loop.  It simply listens
+#  for strings coming through on BlueTooth
+#  and parsing them according to the rules we
+#  defined in the Command dictionary.
 print("listening on port ", port)
 client, clientInfo = s.accept()
 while 1:
@@ -97,4 +106,3 @@ while 1:
 
 		else:
 			client.send("unknown command.")
-

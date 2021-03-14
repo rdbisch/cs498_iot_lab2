@@ -10,15 +10,16 @@ class _Car:
 	"""Provide an easy to use class to encapsualte
 	all of the picar_4wd stuff."""
 	def __init__(self):
-		self.SERVO_OFFSET = 8
-		self.servo_angle = 0
-		self.last_reading = 0
+		self.SERVO_OFFSET = 8 # This is the angle error in the mounting of the servo.
+		self.servo_angle = 0  # This is the current machine angle of the servo
+		self.last_reading = 0 # The last known reading from the ultrasonic sensor.
 		self.velocity = (0,0) # Direction, Speed
-		self.worldpos = (0,0) 
-		self.map = None
+		self.worldpos = (0,0) # y, x location in the world
+		self.map = None       # (not implemented yet, but will be) The inferred map of the world.0
+		self.inMotion = False     # Is the car currently moving
+		self.motionStarted = None # What time did the last motion start, 
+								  #  if we are in motion.
 		self.set_angle(0)
-		self.inMotion = False
-		self.motionStarted = None
 
 	def set_angle(self, angle):
 		"""Set the servo angle to angle, controlling
@@ -33,6 +34,8 @@ class _Car:
 		return self.servo_angle
 
 	def read_worldpos(self):
+		"""Returns the (y,x) coordinate of our inferred world
+		location."""
 		return self.worldpos
 
 	def read_velocity(self):
@@ -102,6 +105,7 @@ class _Car:
 		return self._turnAngle(turn)
 
 	def read_power(self):
+		"""Read the current pi power level."""
 		# From picar_4wd/utils.py
 		from picar_4wd.adc import ADC
 		power_read_pin = ADC('A4')
@@ -113,6 +117,7 @@ class _Car:
 		return power_val
 
 	def read_temp(self):
+		"""Read the current pi temperature."""
 		# From picar_4wd/utils.py
 		raw_cpu_temperature = subprocess.getoutput("cat /sys/class/thermal/thermal_zone0/temp")
 		cpu_temperature = round(float(raw_cpu_temperature)/1000,2)               # convert unit
@@ -120,12 +125,12 @@ class _Car:
 		return cpu_temperature
 
 	def _turnAngle(self, angle):
-		"""Turn the car by a relative amount.  A positive angle is left"""
+		"""Internal method.  Turn the car by a relative amount.  A positive angle is left"""
 		if (angle > 0): return self._turnLeftAngle(angle)
 		else: return self._turnRightAngle(-angle)
 
 	def _turnLeftAngle(self, angle):
-		"""Turn the car left by a relative angle."""
+		"""Internal method.  Turn the car left by a relative angle."""
 		# I told it to turn 15, and I think it turned 25
 		# so I need to scale this by (15/25) = 3/5
 		#2.78 by experimentation.
@@ -137,7 +142,7 @@ class _Car:
 		return
 
 	def _turnRightAngle(self, angle):
-		"""Turn the car right by a relative angle."""
+		"""Internal method.  Turn the car right by a relative angle."""
 		#2.78 by experimentation.
 		duration = (angle / 180.) * (1.98)
 		fc.turn_right(10)

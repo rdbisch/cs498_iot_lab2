@@ -4,24 +4,17 @@ import base64
 import cv2
 from flask import Flask, request
 
+# Flask boiler-plate
 app = Flask(__name__)
 host = "DC:A6:32:9C:02:43" # The address of Raspberry PI Bluetooth adapter on the server.
 
 port = 1
 sock = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
 sock.connect((host, port))
-#while 1:
-#    text = input("Enter your message: ") # Note change to the old (Python 2) raw_input
-#    if text == "quit":
-#        break
-#    sock.send(text)
-#
-#    data = sock.recv(1024)
-#    print("from server: ", data)
-#sock.close()
 
 # Wrapper to abstract bluetooth communications
 def car_send(msg):
+    """Send message via bluetooth and log to the console."""
     print(">> {0}".format(msg))
     sock.send(msg)
     data = sock.recv(1024)
@@ -30,6 +23,10 @@ def car_send(msg):
 
 # Wrapper to receive file
 def recv_file(msg):
+    """This is the counter-procedure to btserver's
+     picwrapper.  Once we know we're receiving a file,
+     we get sent the total number of bytes and prepare to receive
+     the file in a number of bytes."""
     msg = msg["response"].decode('utf-8')
     print("<< {0}".format(msg))
     msg_s = msg.split(" ")
@@ -48,19 +45,18 @@ def recv_file(msg):
         data_b64 = data_b64 + block
         idx = idx + 1
 
+    """This is just a sync to make sure both server and client
+    are aligned."""
     print("Waiting endfile")
     end = sock.recv(1024)
     assert(end == b'endfile')
     print("Received endfile")
 
+    """These are just the opposite of the encoding steps done
+     on the server.  I am not sure base64 is needed."""
     data = base64.b64decode(data_b64)
-
     nparr = np.fromstring(data, np.uint8)
-    print(nparr)
-    print(nparr.shape)
-
     img_decode = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    print("Decode image? {0}".format(img_decode.shape))
     cv2.imwrite('static/picamera.jpg', img_decode)
     return { "success": True }
 
@@ -90,6 +86,8 @@ def set_angle():
 
 @app.route('/worldpos', methods=['GET'])
 def worldpos():
+    """This is just splitting up a float tuple,
+    as a string, into two strings."""
     r = car_send("read_worldpos")
     r = r["response"].decode('utf-8')
     s = r.split(",")
@@ -99,6 +97,15 @@ def worldpos():
 
 @app.route('/heading', methods=['GET', 'POST'])
 def heading():
+    """Depending on the method this stub is called, two
+    effects are present.  It makes sense sementically to call
+    these both "/heading".
+
+    With POST, and an arugment called "angle", will instruct
+    the car to face that heading.  (This is in world coordinates with
+    north as 0).
+
+    With GET, the car's current heading is returned."""
     error = None
     if request.method == 'POST':
         res = request.get_json()
@@ -111,16 +118,19 @@ def heading():
 
 @app.route('/ping', methods=['GET'])
 def ping():
+    """Call's the car's ultrasonic sensor and return the reading."""
     result = car_send("ping")
     return float(result)
 
 @app.route('/picture', methods=['POST'])
 def picture():
+    """Take a picture with the camera."""
     result = car_send("take_picture")
     return recv_file(result)
 
 @app.route('/temp', methods=['GET'])
 def temp():
+    """Read the temperature of the raspberry pi and return the result."""
     result = car_send("read_temp")
     return { "temperature": float(result["response"].decode('utf-8')) }
 
@@ -134,6 +144,7 @@ def hello_world():
     return 'Hello, World!'
 
 if __name__ == '__main__':
+    """Flask boilerplate to start the server."""
     #Disable multithreaded so we only maintain
     # one bluetooth connection
     app.run(threaded=False)
